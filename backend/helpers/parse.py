@@ -19,7 +19,6 @@ def make_json(csvFilePath, jsonFilePath):
     with open(csvFilePath, encoding='utf-8') as csvf:
         csvReader = csv.DictReader(csvf)
         for rows in csvReader:
-            print(rows)
             key = rows['Pitched_Business_Identifier']
             data[key] = rows
  
@@ -27,7 +26,7 @@ def make_json(csvFilePath, jsonFilePath):
         jsonf.write(json.dumps(data, indent=4))
 
 
-csvFilePath = './parse.py'
+csvFilePath = './Sharktankpitchesdeals.csv'
 jsonFilePath = './pitchesdeals.json'
  
 make_json(csvFilePath, jsonFilePath)
