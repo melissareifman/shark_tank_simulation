@@ -18,7 +18,7 @@
             </div>
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
-                <input placeholder="Search for a Keeping up with the Kardashians episode" id="filter-text-val"
+                <input placeholder="Search for a pitch by business description" id="filter-text-val"
                     onkeyup="filterText()">
             </div>
         </div>
@@ -29,11 +29,11 @@
 
     <script>
 
-        function answerBoxTemplate(title, titleDesc, rating) {
+        function answerBoxTemplate(businessIdentifier, businessDesc, dealShark) {
             return `<div class=''>
-                <h3 class='episode-title'>${title}</h3>
-                <p class='episode-desc'>${titleDesc}</p>
-                <p class='episode-rating'>IMDB Rating: ${rating}</p>
+                <h3 class='pitch-title'>${businessIdentifier}</h3>
+                <p class='pitch-desc'>${businessDesc}</p>
+                <p class='deal-shark'>Shark Deals: ${dealShark}</p>
             </div>`
         }
 
@@ -43,16 +43,15 @@
 
         function filterText() {
             document.getElementById("answer-box").innerHTML = ""
-            console.log(document.getElementById("filter-text-val").value)
-            fetch("/episodes?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
+            fetch("/pitches?" + new URLSearchParams({ query: document.getElementById("filter-text-val").value }).toString())
                 .then((response) => response.json())
-                .then((data) => data.forEach(row => {
-
-                    let tempDiv = document.createElement("div")
-                    tempDiv.innerHTML = answerBoxTemplate(row.title, row.descr, row.imdb_rating)
-                    document.getElementById("answer-box").appendChild(tempDiv)
-                }));
-
+                .then((data) => {
+                    data.forEach(row => {
+                        let tempDiv = document.createElement("div")
+                        tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark)
+                        document.getElementById("answer-box").appendChild(tempDiv)
+                    });
+                });
         }
 
     </script>
