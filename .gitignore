@@ -1,7 +1,7 @@
 env/
 .DS_Store
 Docker/__pycache__
-
+shark_tank_env/
 venv/
 
 *.pyc
