@@ -10,11 +10,13 @@
     <div class="full-body-container">
         <div class="top-text">
             <div class="google-colors">
-                <h1 id="google-4">4</h1>
-                <h1>hiiiiii</h1>
-                <h1 id="google-3">3</h1>
+                <!-- <h1 id="google-4">4</h1>
+                <h1>hiiiiii</h1> -->
+                <img src="{{ url_for('static', filename='images/templogo.png') }}" width="540px"
+                    alt="A temporary logo for our search engine.">
+                <!-- <h1 id="google-3">3</h1>
                 <h1 id="google-0-1">0</h1>
-                <h1 id="google-0-2">0</h1>
+                <h1 id="google-0-2">0</h1> -->
             </div>
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
@@ -29,12 +31,14 @@
 
     <script>
 
-        function answerBoxTemplate(businessIdentifier, businessDesc, dealShark) {
+        function answerBoxTemplate(businessIdentifier, businessDesc, dealShark, episodeRating) {
+            let ratingDisplay = episodeRating ? `<p class='episode-rating'>Episode Rating: ${episodeRating}</p>` : `<p class='episode-rating'>Rating not available</p>`;
             return `<div class=''>
-                <h3 class='pitch-title'>${businessIdentifier}</h3>
-                <p class='pitch-desc'>${businessDesc}</p>
-                <p class='deal-shark'>Shark Deals: ${dealShark}</p>
-            </div>`
+            <h3 class='pitch-title'>${businessIdentifier}</h3>
+            <p class='pitch-desc'>${businessDesc}</p>
+            <p class='deal-shark'>Sharks: ${dealShark}</p>
+            ${ratingDisplay}
+        </div>`
         }
 
         function sendFocus() {
@@ -48,7 +52,7 @@
                 .then((data) => {
                     data.forEach(row => {
                         let tempDiv = document.createElement("div")
-                        tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark)
+                        tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark, row.US_Viewership)
                         document.getElementById("answer-box").appendChild(tempDiv)
                     });
                 });
