@@ -49,7 +49,7 @@ def json_search(query):
     
     # Sort documents based on similarity
     similarities.sort(key=lambda x: x[1], reverse=True)
-    top_matches = [sim for sim in similarities if sim[1] > 0.5]  # Could change threshold to be greater or less than 0.5
+    top_matches = [sim for sim in similarities if sim[1] > 0.3]  # Could change threshold to be greater or less than 0.5
     matches_filtered = pitches_df.iloc[[sim[0] for sim in top_matches]]
     matches_filtered = matches_filtered[['Pitched_Business_Identifier', 'Pitched_Business_Desc', 'Deal_Status', 'Deal_Shark', 'US_Viewership']]
     print(matches_filtered)
