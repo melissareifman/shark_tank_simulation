@@ -31,10 +31,11 @@
             <h3 class='pitch-title'>${businessIdentifier}</h3>
             ${dealStatusMessage}
             <p class='pitch-desc'>${businessDesc}</p>
-            <p class='deal-shark'>Sharks: ${dealShark}</p>
+            <p class='deal-shark sharks-label'>Sharks: ${dealShark}</p>
             ${ratingDisplay}
-        </div>`
+            </div>`
         }
+
 
         function sendFocus() {
             document.getElementById('filter-text-val').focus()
@@ -53,9 +54,9 @@
                 });
         }
         function handleClick() {
-            document.getElementById('full-body-container').style.backgroundImage = "url('{{ url_for('static', filename='images/sharkbackground.png') }}')";
+            document.getElementById('full-body-container').style.backgroundImage = "url('{{ url_for('static', filename='images/background.png') }}')";
             document.getElementById('top-text').style.display = "block";
-            document.getElementById("answer-box-container").style.border = "1px solid #000";
+            // document.getElementById("answer-box-container").style.border = "1px solid #000";
             document.getElementById("overlay").style.display = "none";
         }
     </script>

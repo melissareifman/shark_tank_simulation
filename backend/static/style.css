@@ -1,10 +1,11 @@
 body {
-    background-image: url('images/shark_tank_sim.png');
+    background-image: url('images/background.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    background-attachment: fixed;
     margin: 0;
-    height: 100vh;
+    font-size: 20px;
 }
 
 .full-body-container {
@@ -66,7 +67,7 @@ body {
     border: 1px solid black;
     display: flex;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 100px;
     padding: 12px;
     width: 600px;
 }
@@ -86,12 +87,9 @@ body {
     font-family: 'Montserrat', sans-serif;
     text-shadow: 1px 1px 2px rgb(0, 0, 0);
     pointer-events: none;
-    /* Ensure clicks pass through overlay */
     z-index: 1;
-    /* Ensure overlay is above background */
 }
 
-/* Hide overlay when top-text is visible */
 #top-text {
     display: none;
 }
@@ -100,12 +98,12 @@ body {
     display: none;
 }
 
-/* 
+
 .top-text {
     display: flex;
     flex-direction: column;
     align-items: center;
-} */
+}
 
 .input-box input {
     width: 100%;
@@ -119,15 +117,26 @@ body {
 #answer-box-container {
     width: 700px;
     height: 80vh;
-    overflow-y: auto;
-    margin-top: 30px;
+    margin-top: 10px;
     border: 1px solid transparent;
     border-radius: 5px;
+    font-family: 'Kanit', sans-serif;
 }
 
 #answer-box {
-    width: 90%;
-    padding: 30px;
+    width: 100%;
+    padding: 5px;
+    font-family: 'Kanit', sans-serif;
+}
+
+.circle-rating {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 50%;
+    background-color: #526D82;
+    text-align: center;
 }
 
 .episode-title {
@@ -158,4 +167,42 @@ body {
     color: #00ff04;
     font-weight: bold;
     text-shadow: 1px 1px #000000;
+}
+
+@font-face {
+    font-family: 'Kenyan Coffee';
+    src: url('/static/fonts/kenyan_coffee_bd.otf') format('opentype');
+    font-weight: bold;
+}
+
+.pitch-title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 50px;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.pitch-desc {
+    font-size: 20px;
+}
+
+.pitch-desc,
+.episode-rating,
+.no-deal,
+.yes-deal,
+.sharks-label,
+.episode-rating {
+    margin: 0;
+    padding: 0;
+}
+
+.sharks-label,
+.episode-rating {
+    font-size: 20px;
+}
+
+#answer-box-container {
+    width: 60%;
+    margin: 0 auto;
 }
