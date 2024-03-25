@@ -18,6 +18,9 @@
             </div>
         </div>
         <div id="answer-box-container">
+            <div id="loading-spinner" style="display: none;">
+                <img src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading...">
+            </div>
             <div id="answer-box"></div>
         </div>
     </div>
@@ -26,7 +29,7 @@
 
         function answerBoxTemplate(businessIdentifier, businessDesc, dealShark, episodeRating) {
             let ratingDisplay = episodeRating ? `<p class='episode-rating'>Episode Rating: ${episodeRating}</p>` : `<p class='episode-rating'>Rating not available</p>`;
-            let dealStatusMessage = dealShark=="N/A" ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
+            let dealStatusMessage = dealShark == "N/A" ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
             return `<div class=''>
             <h3 class='pitch-title'>${businessIdentifier}</h3>
             ${dealStatusMessage}
@@ -42,15 +45,17 @@
         }
 
         function filterText() {
-            document.getElementById("answer-box").innerHTML = ""
+            document.getElementById("answer-box").innerHTML = "";
+            document.getElementById("loading-spinner").style.display = "block";
             fetch("/pitches?" + new URLSearchParams({ query: document.getElementById("filter-text-val").value }).toString())
                 .then((response) => response.json())
                 .then((data) => {
                     data.forEach(row => {
                         let tempDiv = document.createElement("div")
                         tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark, row.US_Viewership)
-                        document.getElementById("answer-box").appendChild(tempDiv)
+                        document.getElementById("answer-box").appendChild(tempDiv);
                     });
+                    document.getElementById("loading-spinner").style.display = "none";
                 });
         }
         function handleClick() {
