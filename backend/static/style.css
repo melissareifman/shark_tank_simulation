@@ -79,11 +79,11 @@ body {
 
 .overlay {
     position: absolute;
-    top: 15%;
+    top: 95%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 24px;
-    color: rgb(161, 247, 255);
+    color: rgb(255, 255, 255);
     font-family: 'Montserrat', sans-serif;
     text-shadow: 1px 1px 2px rgb(0, 0, 0);
     pointer-events: none;
@@ -149,22 +149,22 @@ body {
 
 .deal-shark {
     font-size: 15px;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 .episode-rating {
     font-size: 15px;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 .no-deal {
-    color: #ff0000;
+    color: #ad0f0f;
     font-weight: bold;
     text-shadow: 1px 1px #000000;
 }
 
 .yes-deal {
-    color: #00ff04;
+    color: #1f6a20;
     font-weight: bold;
     text-shadow: 1px 1px #000000;
 }

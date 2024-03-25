@@ -9,7 +9,7 @@
 
 <body onclick="handleClick()">
     <div class="full-body-container" id="full-body-container">
-        <div class="overlay" id="overlay">Click anywhere to start!</div>
+        <div class="overlay" id="overlay">ENTER THE TANK</div>
         <div class="top-text" id="top-text" style="display: none;">
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
@@ -26,7 +26,7 @@
 
         function answerBoxTemplate(businessIdentifier, businessDesc, dealShark, episodeRating) {
             let ratingDisplay = episodeRating ? `<p class='episode-rating'>Episode Rating: ${episodeRating}</p>` : `<p class='episode-rating'>Rating not available</p>`;
-            let dealStatusMessage = !dealShark ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
+            let dealStatusMessage = dealShark=="N/A" ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
             return `<div class=''>
             <h3 class='pitch-title'>${businessIdentifier}</h3>
             ${dealStatusMessage}
