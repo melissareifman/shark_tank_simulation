@@ -33,18 +33,45 @@ def json_search(query):
 
     query_words = set(query.lower().split())
     query_word_count = len(query_words)
-    tfidf_query = compute_query_vector(query, consts.idf_dict)
+    ### WE SHOULD REMOVE STOP WORDS ###
+    tfidf_query = compute_query_vector(query, consts.idf_dict) 
     similarities = []
-    for index, row in pitches_df.iterrows():
-        tfidf_doc = compute_document_vector(index, consts.inverted_index, consts.idf_dict, consts.n_docs)
-        doc_norm = consts.doc_norms[index]
-        similarity = cosine_similarity(tfidf_doc, tfidf_query, doc_norm)
-        similarities.append((index, similarity))
+    # This is a numpy array
+    tfidf_matrix = create_tfidf_matrix(pitches_df.iterrows())
+    # SVD
+    U, sigma, Vt = np.linalg.svd(tfidf_matrix, full_matrices=False)
+    # Choose the top k components, can do different k
+    k = 35
+    V_k = Vt.T[:, :k]
+    normalize_vec = V_k/np.linalg.norm(V_k, axis = 1, keepdims = True)
+    # putting the query in k dimensions like V_k
+    tfidf_query = np.dot(V_k.T, tfidf_query[:V_k.shape[0]])
+    normal_query = tfidf_query / np.linalg.norm(tfidf_query)
+    similarities = np.dot(normalize_vec, normal_query)
+
+    # Old cosine stuff
+    # for index, row in pitches_df.iterrows():
+    #     tfidf_doc = compute_document_vector(index, consts.inverted_index, consts.idf_dict, consts.n_docs)
+    #     doc_norm = consts.doc_norms[index]
+    #     similarity = cosine_similarity(tfidf_doc, tfidf_query, doc_norm)
+    #     similarities.append((index, similarity))
     
+    # Social component starts here
+    # We should probably make it so a high viewership weights high similarities higher and low similarities 
+    # lower because particularly good or bad deals likely get more viewership
+    # Right now we just weight similarity as 10% of the score 
+    max_viewership = pitches_df['US_Viewership'].max()
+    min_viewership = pitches_df['US_Viewership'].min()
+    pitches_df['Normalized_Viewership'] = (pitches_df['US_Viewership'] - min_viewership) / (max_viewership - min_viewership)
+    social_similarities = [sim +  (.01 * pitches_df.iloc[ind]['Normalized_Viewership']) for ind, sim in enumerate(similarities)]
+    # End of social component
+
+    indexed_similarities = [(index, sim) for index, sim in enumerate(social_similarities)]
     # Sort documents based on similarity
-    similarities.sort(key=lambda x: x[1], reverse=True)
-    top_matches = list(set([sim for sim in similarities if sim[1] > 0.3]))  # Could change threshold to be greater or less than 0.5
-    matches_filtered = pitches_df.iloc[[sim[0] for sim in top_matches]]
+    indexed_similarities.sort(key=lambda x: x[1], reverse=True)
+    top_matches = [ind for ind, sim in indexed_similarities if sim > 0.5]  # Could change threshold to be greater or less than 0.5
+
+    matches_filtered = pitches_df.iloc[top_matches]
     matches_filtered = matches_filtered[['Pitched_Business_Identifier', 'Pitched_Business_Desc', 'Deal_Status', 'Deal_Shark', 'US_Viewership']]
     matches_filtered_json = matches_filtered.to_json(orient='records')
     return matches_filtered_json
@@ -55,7 +82,12 @@ def json_search(query):
     # return matches_filtered_json
 
 
-
+def create_tfidf_matrix(document_list):
+    """ 
+    Create the TF-IDF matrix. 
+    """
+    tfidf_matrix = np.array([compute_document_vector(index, consts.inverted_index, consts.idf_dict, consts.n_docs) for index, row in document_list])
+    return tfidf_matrix
 
 def compute_query_vector(query, idf_dict):
     """
