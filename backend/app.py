@@ -63,7 +63,7 @@ def json_search(query):
     max_viewership = pitches_df['US_Viewership'].max()
     min_viewership = pitches_df['US_Viewership'].min()
     pitches_df['Normalized_Viewership'] = (pitches_df['US_Viewership'] - min_viewership) / (max_viewership - min_viewership)
-    social_similarities = [sim +  (.01 * pitches_df.iloc[ind]['Normalized_Viewership']) for ind, sim in enumerate(similarities)]
+    social_similarities = [sim +  (.1 * pitches_df.iloc[ind]['Normalized_Viewership']) for ind, sim in enumerate(similarities)]
     # End of social component
 
     indexed_similarities = [(index, sim) for index, sim in enumerate(social_similarities)]
