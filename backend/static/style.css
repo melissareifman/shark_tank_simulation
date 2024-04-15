@@ -217,3 +217,10 @@ body {
 #loading-spinner img {
     width: 70%;
 }
+
+.shark-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    object-position: center;
+}

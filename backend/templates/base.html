@@ -49,12 +49,13 @@
             let ratingDisplay = episodeRating ? `<p class='episode-rating'>Episode Rating: ${episodeRating}</p>` : `<p class='episode-rating'>Rating not available</p>`;
             let dealStatusMessage = dealShark == "N/A" ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
             let imageSrc = getImageSrc(dealShark);
+            // Here, we concatenate the strings correctly using backticks and ${} for variables
             return `<div class=''>
             <h3 class='pitch-title'>${businessIdentifier}</h3>
             ${dealStatusMessage}
             <p class='pitch-desc'>${businessDesc}</p>
             <p class='deal-shark sharks-label'>Sharks: ${dealShark}</p>
-            <img src="{{ url_for('static', filename='images/question.png') }}"   />
+            <img src="/static/${imageSrc}" alt="Shark Image" />
             ${ratingDisplay}
             </div>`
         }
