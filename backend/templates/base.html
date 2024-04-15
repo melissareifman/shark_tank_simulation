@@ -26,19 +26,38 @@
     </div>
 
     <script>
+        function getImageSrc(dealShark) {
+            switch (dealShark) {
+                case "LG":
+                    return 'images/lori.png';
+                case "BC":
+                    return 'images/barbara.png';
+                case "KOL":
+                    return 'images/kevin.png';
+                case "MC":
+                    return 'images/mark.png';
+                case "RH":
+                    return 'images/robert.png';
+                case "DJ":
+                    return 'images/daymond.png';
+                default:
+                    return 'images/question.png';
+            }
+        }
 
         function answerBoxTemplate(businessIdentifier, businessDesc, dealShark, episodeRating) {
             let ratingDisplay = episodeRating ? `<p class='episode-rating'>Episode Rating: ${episodeRating}</p>` : `<p class='episode-rating'>Rating not available</p>`;
             let dealStatusMessage = dealShark == "N/A" ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
+            let imageSrc = getImageSrc(dealShark);
             return `<div class=''>
             <h3 class='pitch-title'>${businessIdentifier}</h3>
             ${dealStatusMessage}
             <p class='pitch-desc'>${businessDesc}</p>
             <p class='deal-shark sharks-label'>Sharks: ${dealShark}</p>
+            <img src="{{ url_for('static', filename='images/question.png') }}"   />
             ${ratingDisplay}
             </div>`
         }
-
 
         function sendFocus() {
             document.getElementById('filter-text-val').focus()
