@@ -29,19 +29,19 @@
         function getImageSrc(dealShark) {
             switch (dealShark) {
                 case "LG":
-                    return 'images/lori.png';
+                    return 'images/lori.jpeg';
                 case "BC":
-                    return 'images/barbara.png';
+                    return 'images/barbara.jpeg';
                 case "KOL":
-                    return 'images/kevin.png';
+                    return 'images/kevin.jpeg';
                 case "MC":
-                    return 'images/mark.png';
+                    return 'images/mark.jpeg';
                 case "RH":
-                    return 'images/robert.png';
+                    return 'images/robert.jpeg';
                 case "DJ":
-                    return 'images/daymond.png';
+                    return 'images/daymond.jpeg';
                 default:
-                    return 'images/question.png';
+                    return 'images/nodeal.png';
             }
         }
 
@@ -50,14 +50,17 @@
             let dealStatusMessage = dealShark == "N/A" ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
             let imageSrc = getImageSrc(dealShark);
             // Here, we concatenate the strings correctly using backticks and ${} for variables
-            return `<div class=''>
-            <h3 class='pitch-title'>${businessIdentifier}</h3>
-            ${dealStatusMessage}
-            <p class='pitch-desc'>${businessDesc}</p>
-            <p class='deal-shark sharks-label'>Sharks: ${dealShark}</p>
+            return `
+            <div class='card'>
+                <div class='card-content'>
+                    <h3 class='pitch-title'>${businessIdentifier}</h3>
+                    <p class='pitch-desc'>${businessDesc}</p>
+                    <p class='deal-shark sharks-label'>Sharks: ${dealShark}</p>
+                    ${ratingDisplay}
+                 </div>
             <img src="/static/${imageSrc}" alt="Shark Image" />
-            ${ratingDisplay}
-            </div>`
+            </div>`;
+
         }
 
         function sendFocus() {
@@ -79,7 +82,8 @@
                 });
         }
         function handleClick() {
-            document.getElementById('full-body-container').style.backgroundImage = "url('{{ url_for('static', filename='images/background.png') }}')";
+            document.getElementById('full-body-container').style.backgroundImage = 'none';
+            //document.getElementById('full-body-container').style.backgroundImage = "url('{{ url_for('static', filename='images/background.png') }}')";
             document.getElementById('top-text').style.display = "block";
             // document.getElementById("answer-box-container").style.border = "1px solid #000";
             document.getElementById("overlay").style.display = "none";
