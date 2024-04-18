@@ -9,6 +9,7 @@
 
 <body onclick="handleClick()">
     <div class="full-body-container" id="full-body-container">
+        <!-- <div class="static-overlay"></div> -->
         <div class="overlay" id="overlay">ENTER THE TANK</div>
         <div class="top-text" id="top-text" style="display: none;">
             <div class="input-box" onclick="sendFocus()">
@@ -84,5 +85,17 @@
             // document.getElementById("answer-box-container").style.border = "1px solid #000";
             document.getElementById("overlay").style.display = "none";
         }
+
+        document.getElementById('full-body-container').addEventListener('mousemove', function (e) {
+            const bounds = this.getBoundingClientRect();
+            const x = e.clientX - bounds.left;
+            const y = e.clientY - bounds.top;
+            const centerX = bounds.width / 2;
+            const centerY = bounds.height / 2;
+            const deltaX = (x - centerX) * 0.05; // Change the multiplier to adjust sensitivity
+            const deltaY = (y - centerY) * 0.05; // Change the multiplier to adjust sensitivity
+            this.style.backgroundPosition = `${50 - deltaX}% ${50 - deltaY}%`;
+        });
+
     </script>
 </body>
