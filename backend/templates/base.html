@@ -10,7 +10,7 @@
 <body onclick="handleClick()">
     <div class="full-body-container" id="full-body-container">
         <!-- <div class="static-overlay"></div> -->
-        <div class="overlay" id="overlay">ENTER THE TANK</div>
+        <div class="overlay" id="overlay">CLICK TO ENTER THE TANK</div>
         <div class="top-text" id="top-text" style="display: none;">
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
@@ -20,7 +20,7 @@
         </div>
         <div id="answer-box-container">
             <div id="loading-spinner" style="display: none;">
-                <img src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading...">
+                <div class="loader"></div>
             </div>
             <div id="answer-box"></div>
         </div>
@@ -96,6 +96,22 @@
             const deltaY = (y - centerY) * 0.05; // Change the multiplier to adjust sensitivity
             this.style.backgroundPosition = `${50 - deltaX}% ${50 - deltaY}%`;
         });
+
+        function filterText() {
+            document.getElementById("answer-box").innerHTML = "";
+            document.getElementById("loading-spinner").style.display = "block"; // Show spinner
+            fetch("/pitches?" + new URLSearchParams({ query: document.getElementById("filter-text-val").value }).toString())
+                .then((response) => response.json())
+                .then((data) => {
+                    data.forEach(row => {
+                        let tempDiv = document.createElement("div")
+                        tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark, row.US_Viewership)
+                        document.getElementById("answer-box").appendChild(tempDiv);
+                    });
+                    document.getElementById("loading-spinner").style.display = "none"; // Hide spinner once data is loaded
+                });
+        }
+
 
     </script>
 </body>
