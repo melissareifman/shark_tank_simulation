@@ -58,6 +58,10 @@
                     <p class='pitch-desc'>${businessDesc}</p>
                     <p class='deal-shark sharks-label'>Sharks: ${dealShark}</p>
                     ${ratingDisplay}
+                    <div class='feedback-buttons'>
+                        <button onclick="sendFeedback('${documentId}', true)">Relevant</button>
+                        <button onclick="sendFeedback('${documentId}', false)">Irrelevant</button>
+                    </div>
                  </div>
             <img src="/static/${imageSrc}" alt="Shark Image" />
             </div>`;
@@ -66,6 +70,33 @@
 
         function sendFocus() {
             document.getElementById('filter-text-val').focus()
+        }
+
+        function sendFeedback(docID, isRelevant){
+            const query = document.getElementById("filter-text-val").value;
+            const feedback = {
+                query: query,
+                documents: [
+                    {
+                        document_id: docID,
+                        relevance: isRelevant
+                    }
+                ]
+            };
+            fetch("/feedback", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(feedback)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Feedback sent:", data);
+            })
+            .catch(error => {
+                console.error("Error sending feedback:", error);
+            });
         }
 
         function filterText() {
