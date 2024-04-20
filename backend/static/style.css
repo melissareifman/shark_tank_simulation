@@ -25,7 +25,9 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    background-attachment: scroll;
 }
+
 
 .static-overlay {
     position: absolute;
@@ -194,7 +196,7 @@ body {
     margin-left: 20px;
 }
 
-.card-content{
+.card-content {
     flex-grow: 1;
 }
 
