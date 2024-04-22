@@ -293,7 +293,12 @@ def svd_search(query, U, S, Vt, pitches_df, idf_dict):
     top_indices = np.where(agg_sims > 0.5)[0]
     if len(top_indices) == 0:
         return None
+    
     matches_filtered = pitches_df.iloc[top_indices]
+    matches_filtered["similarity_score"] = agg_sims[top_indices]
+
+    matches_filtered = matches_filtered.sort_values(by="similarity_score", ascending=False)
+
     return matches_filtered.to_json(orient='records')
 
 if __name__ == '__main__':
