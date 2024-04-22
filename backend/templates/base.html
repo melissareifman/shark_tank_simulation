@@ -43,8 +43,31 @@
                     return 'images/robert.jpeg';
                 case "DJ":
                     return 'images/daymond.jpeg';
+                case "Others":
+                    return 'images/others.png';
                 default:
                     return 'images/nodeal.png';
+            }
+        }
+
+        function getShark(dealShark) {
+            switch (dealShark) {
+                case "LG":
+                    return 'Lori Greiner';
+                case "BC":
+                    return 'Barbara Corcoran';
+                case "KOL":
+                    return "Kevin O'Leary";
+                case "MC":
+                    return 'Mark Cuban';
+                case "RH":
+                    return 'Robert Herjavec';
+                case "DJ":
+                    return 'Daymond John';
+                case "Others":
+                    return 'Guest';
+                default:
+                    return 'N/A';
             }
         }
 
@@ -52,24 +75,50 @@
             let ratingDisplay = episodeRating ? `<p class='episode-rating'>Episode Rating: ${episodeRating}</p>` : `<p class='episode-rating'>Rating not available</p>`;
             let dealStatusMessage = dealShark == "N/A" ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
             let imageSrc = getImageSrc(dealShark);
-            // Here, we concatenate the strings correctly using backticks and ${} for variables
+
+            //if there are 2 sharks
+            let sharkImages = '';
+            let sharkName = '';
+
+            if (dealShark.includes('+')){
+                const sharks = dealShark.split('+');
+                const shark1Src = getImageSrc(sharks[0]);
+                const shark2Src = getImageSrc(sharks[1]);
+                const shark1Name = getShark(sharks[0]);
+                const shark2Name = getShark(sharks[1]);
+
+                sharkName = shark1Name + " + " + shark2Name;
+                sharkImages =`
+                    <div class="shark-images">
+                        <img src="/static/${shark1Src}" class="shark-img" alt="${sharks[0]}">
+                        <img src="/static/${shark2Src}" class="shark-img" alt="${sharks[1]}">
+                    </div>
+                `;
+
+            }
+            //if there is 1 shark
+            else{
+                sharkImages =  `<img src="/static/${imageSrc}" alt="Shark Image" />`;
+                sharkName = getShark(dealShark);
+            }
+
+           
             return `
             <div class='card'>
                 <div class='card-content'>
                     <h3 class='pitch-title'>${businessIdentifier}</h3>
                     <p class='pitch-desc'>${businessDesc}</p>
-                    <p class='deal-shark sharks-label'>Sharks: ${dealShark}</p>
+                    <p class='deal-shark sharks-label'>Shark(s): ${sharkName}</p>
                     ${ratingDisplay}
                     <p class='deal-shark sharks-label'>Is this idea similar to your pitch?</p>
-                    
+
                     <div class='feedback-buttons'>
                         <button data-feedback="relevant" data-doc-id="${businessIdentifier}"><i class="fa fa-thumbs-up"></i></button>
                         <button data-feedback="irrelevant" data-doc-id="${businessIdentifier}"><i class="fa fa-thumbs-down"></i></button>
                     </div>
                  </div>
-            <img src="/static/${imageSrc}" alt="Shark Image" />
+            ${sharkImages}
             </div>`;
-
         }
 
         function sendFocus() {

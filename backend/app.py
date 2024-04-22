@@ -236,7 +236,8 @@ def rocchio(query, a=.3, b=.3, c=.8, clip = True):
 def svd_search(query, U, S, Vt, pitches_df, idf_dict):
     cos_similarity = json_search(query)
     query_vector = compute_tfidf_vector(query, idf_dict)
-    updated_query_vector = rocchio(query_vector)
+    #updated_query_vector = rocchio(query_vector)
+    updated_query_vector = query_vector
 
     if np.linalg.norm(query_vector) == 0:
         print("Query vector is zero.")

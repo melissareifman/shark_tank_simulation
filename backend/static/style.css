@@ -165,12 +165,12 @@ body {
     color: white;
     border-radius: 5px;
     border: none;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .feedback-buttons button:hover{
-    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.4);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
 }
 
 #answer-box-container {
@@ -315,4 +315,24 @@ body {
 
 #loading-spinner img {
     width: 70%;
+}
+
+.shark-images {
+    position: relative;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.shark-img {
+    width: 60px; 
+    height: 60px;
+    border-radius: 50%;
+    margin-right: -15px; 
+    border: 2px solid white; 
+}
+
+.shark-img:last-child {
+    margin-right: 0;
 }
