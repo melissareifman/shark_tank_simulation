@@ -5,6 +5,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit&family=Montserrat&family=Open+Sans:wght@500&display=swap"
     rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 
 
 <body onclick="handleClick()">
@@ -58,6 +60,12 @@
                     <p class='pitch-desc'>${businessDesc}</p>
                     <p class='deal-shark sharks-label'>Sharks: ${dealShark}</p>
                     ${ratingDisplay}
+                    <p class='deal-shark sharks-label'>Is this idea similar to your pitch?</p>
+                    
+                    <div class='feedback-buttons'>
+                        <button data-feedback="relevant" data-doc-id="${businessIdentifier}"><i class="fa fa-thumbs-up"></i></button>
+                        <button data-feedback="irrelevant" data-doc-id="${businessIdentifier}"><i class="fa fa-thumbs-down"></i></button>
+                    </div>
                  </div>
             <img src="/static/${imageSrc}" alt="Shark Image" />
             </div>`;
@@ -67,39 +75,6 @@
         function sendFocus() {
             document.getElementById('filter-text-val').focus()
         }
-
-        function filterText() {
-            document.getElementById("answer-box").innerHTML = "";
-            document.getElementById("loading-spinner").style.display = "block";
-            fetch("/pitches?" + new URLSearchParams({ query: document.getElementById("filter-text-val").value }).toString())
-                .then((response) => response.json())
-                .then((data) => {
-                    data.forEach(row => {
-                        let tempDiv = document.createElement("div")
-                        tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark, row.US_Viewership)
-                        document.getElementById("answer-box").appendChild(tempDiv);
-                    });
-                    document.getElementById("loading-spinner").style.display = "none";
-                });
-        }
-        function handleClick() {
-            document.getElementById('full-body-container').style.backgroundImage = 'none';
-            //document.getElementById('full-body-container').style.backgroundImage = "url('{{ url_for('static', filename='images/background.png') }}')";
-            document.getElementById('top-text').style.display = "block";
-            // document.getElementById("answer-box-container").style.border = "1px solid #000";
-            document.getElementById("overlay").style.display = "none";
-        }
-
-        document.getElementById('full-body-container').addEventListener('mousemove', function (e) {
-            const bounds = this.getBoundingClientRect();
-            const x = e.clientX - bounds.left;
-            const y = e.clientY - bounds.top;
-            const centerX = bounds.width / 2;
-            const centerY = bounds.height / 2;
-            const deltaX = (x - centerX) * 0.05; // Change the multiplier to adjust sensitivity
-            const deltaY = (y - centerY) * 0.05; // Change the multiplier to adjust sensitivity
-            this.style.backgroundPosition = `${50 - deltaX}% ${50 - deltaY}%`;
-        });
 
         function filterText() {
             document.getElementById("answer-box").innerHTML = "";
@@ -113,9 +88,47 @@
                         document.getElementById("answer-box").appendChild(tempDiv);
                     });
                     document.getElementById("loading-spinner").style.display = "none"; // Hide spinner once data is loaded
+
+                    attachFeedbackButtonListeners();
                 });
         }
 
+        function handleClick() {
+            document.getElementById('full-body-container').style.backgroundImage = 'none';
+            //document.getElementById('full-body-container').style.backgroundImage = "url('{{ url_for('static', filename='images/background.png') }}')";
+            document.getElementById('top-text').style.display = "block";
+            // document.getElementById("answer-box-container").style.border = "1px solid #000";
+            document.getElementById("overlay").style.display = "none";
+        }
+
+        function attachFeedbackButtonListeners() {            
+            const buttons = document.querySelectorAll('.feedback-buttons button');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault(); 
+                    //console.log('Button clicked:', event.target);
+                    const feedback = this.getAttribute('data-feedback'); 
+                    //console.log('Feedback:', feedback);
+                    const docId = this.getAttribute('data-doc-id');
+
+                    fetch('/feedback', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ feedback: feedback, doc_id: docId }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Feedback received:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error sending feedback:', error);
+                    });
+                });
+            });
+        }
 
     </script>
 </body>

@@ -4,13 +4,18 @@ import re
 import math
 import numpy as np
 import pandas as pd
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 import consts
 
 app = Flask(__name__)
 CORS(app)
+
+feedback_data = {
+    "relevant" : set(),
+    "irrelevant" : set()
+}
 
 # Load data from JSON
 def load_data(json_file_path):
@@ -66,6 +71,23 @@ def pitches_search():
         return {"error": "No query provided"}, 400
     result = svd_search(query, U, S, Vt, pitches_df, idf_dict)
     return result or {"message": "No matches found"}, 404
+
+
+@app.route('/feedback', methods=['POST'])
+def feedback():
+    data = request.get_json()  # Retrieve JSON data from the request
+    feedback_type = data.get('feedback')  # Get the feedback type from the data
+    doc_id = data.get('doc_id')
+
+    if feedback_type == "relevant":
+        feedback_data["relevant"].add(doc_id)
+        feedback_data["irrelevant"].discard(doc_id)
+    elif feedback_type == "irrelevant":
+        feedback_data["irrelevant"].add(doc_id)
+        feedback_data["relevant"].discard(doc_id)
+
+    print(f"Received feedback: {feedback_type} for document ID: {doc_id}")
+    return jsonify(success=True)
 
 # def compute_query_vector(query, idf_dict):
 #     """
@@ -179,14 +201,47 @@ def json_search(query):
 
     return similarities
 
+def rocchio(query, a=.3, b=.3, c=.8, clip = True):
+    """Returns a vector representing the modified query vector.
+
+    Note:
+        If the `clip` parameter is set to True, the resulting vector should have
+        no negatve weights in it!
+    """
+    q0 = query
+    relevant_docs = list(feedback_data["relevant"])
+    irrelevant_docs = list(feedback_data["irrelevant"])
+
+    term1 = a * q0
+
+    if len(relevant_docs) == 0:
+        term2 = b * np.zeros_like(q0)
+    else:
+        term2 = b * np.mean(tfidf_matrix[relevant_docs], axis=0)
+
+    if len(irrelevant_docs) == 0:
+        term3 = c * np.zeros_like(q0)
+    else:
+        term3 = c * np.mean(tfidf_matrix[irrelevant_docs], axis=0)
+
+    res = term1 + term2 - term3
+
+    if clip:
+        for i in range(len(res)):
+            if res[i] < 0:
+                res[i] = 0
+
+    return res
 
 def svd_search(query, U, S, Vt, pitches_df, idf_dict):
     cos_similarity = json_search(query)
     query_vector = compute_tfidf_vector(query, idf_dict)
+    updated_query_vector = rocchio(query_vector)
+
     if np.linalg.norm(query_vector) == 0:
         print("Query vector is zero.")
         return None
-    query_svd = query_vector @ Vt.T
+    query_svd = updated_query_vector @ Vt.T
     query_svd /= np.linalg.norm(query_svd)
     document_projections = U * S[:len(query_svd)]
     similarities = np.dot(document_projections, query_svd)
