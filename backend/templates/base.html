@@ -71,7 +71,7 @@
             }
         }
 
-        function answerBoxTemplate(businessIdentifier, businessDesc, dealShark, episodeRating) {
+        function answerBoxTemplate(businessIdentifier, businessDesc, dealShark, episodeRating, simScore) {
             let ratingDisplay = episodeRating ? `<p class='episode-rating'>Episode Rating: ${episodeRating}</p>` : `<p class='episode-rating'>Rating not available</p>`;
             let dealStatusMessage = dealShark == "N/A" ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
             let imageSrc = getImageSrc(dealShark);
@@ -110,8 +110,9 @@
                     <p class='pitch-desc'>${businessDesc}</p>
                     <p class='deal-shark sharks-label'>Shark(s): ${sharkName}</p>
                     ${ratingDisplay}
+                    <p class='deal-shark sharks-label'>Similarity Score: ${simScore.toFixed(2)}</p>
+                    <div></div>
                     <p class='deal-shark sharks-label'>Is this idea similar to your pitch?</p>
-
                     <div class='feedback-buttons'>
                         <button data-feedback="relevant" data-doc-id="${businessIdentifier}"><i class="fa fa-thumbs-up"></i></button>
                         <button data-feedback="irrelevant" data-doc-id="${businessIdentifier}"><i class="fa fa-thumbs-down"></i></button>
@@ -132,8 +133,9 @@
                 .then((response) => response.json())
                 .then((data) => {
                     data.forEach(row => {
+                        let simScore = row.similarity_score;
                         let tempDiv = document.createElement("div")
-                        tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark, row.US_Viewership)
+                        tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark, row.US_Viewership, simScore)
                         document.getElementById("answer-box").appendChild(tempDiv);
                     });
                     document.getElementById("loading-spinner").style.display = "none"; // Hide spinner once data is loaded
