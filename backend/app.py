@@ -52,7 +52,7 @@ def create_tfidf_matrix(pitches_df, idf_dict):
     return np.array([compute_tfidf_vector(doc, idf_dict) for doc in pitches_df['Pitched_Business_Desc']])
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-json_file_path = os.path.join(current_directory, 'helpers/cleaned_pitchesdeals.json')
+json_file_path = os.path.join(current_directory, 'helpers/superclean_pitchesdeals.json')
 pitches_df = load_data(json_file_path)
 corpus = pitches_df['Pitched_Business_Desc'].tolist()
 idf_dict = calculate_idf(corpus)
