@@ -87,6 +87,9 @@ def feedback():
         feedback_data["relevant"].discard(doc_id)
 
     print(f"Received feedback: {feedback_type} for document ID: {doc_id}")
+    print(f"Relevant Docs: {feedback_data['relevant']}")
+    print(f"Irrelevant Docs: {feedback_data['irrelevant']}")
+
     return jsonify(success=True)
 
 # def compute_query_vector(query, idf_dict):
@@ -212,17 +215,20 @@ def rocchio(query, a=.3, b=.3, c=.8, clip = True):
     relevant_docs = list(feedback_data["relevant"])
     irrelevant_docs = list(feedback_data["irrelevant"])
 
+    rel_docs_indices = [consts.mapping[doc] for doc in relevant_docs]
+    irrel_docs_indices = [consts.mapping[doc] for doc in irrelevant_docs]
+
     term1 = a * q0
 
     if len(relevant_docs) == 0:
         term2 = b * np.zeros_like(q0)
     else:
-        term2 = b * np.mean(tfidf_matrix[relevant_docs], axis=0)
+        term2 = b * np.mean(tfidf_matrix[rel_docs_indices], axis=0)
 
     if len(irrelevant_docs) == 0:
         term3 = c * np.zeros_like(q0)
     else:
-        term3 = c * np.mean(tfidf_matrix[irrelevant_docs], axis=0)
+        term3 = c * np.mean(tfidf_matrix[irrel_docs_indices], axis=0)
 
     res = term1 + term2 - term3
 
@@ -236,8 +242,10 @@ def rocchio(query, a=.3, b=.3, c=.8, clip = True):
 def svd_search(query, U, S, Vt, pitches_df, idf_dict):
     cos_similarity = json_search(query)
     query_vector = compute_tfidf_vector(query, idf_dict)
-    #updated_query_vector = rocchio(query_vector)
-    updated_query_vector = query_vector
+    updated_query_vector = rocchio(query_vector)
+    print(f"query vec: {query_vector}")
+    print(f"rocchio query vec: {updated_query_vector}")
+
 
     if np.linalg.norm(query_vector) == 0:
         print("Query vector is zero.")

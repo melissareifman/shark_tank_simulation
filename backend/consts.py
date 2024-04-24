@@ -117,6 +117,13 @@ def compute_doc_norms(index, idf, n_docs):
     norms = np.sqrt(norms)
     return norms
 
+
+
+def index_businessid_mapping(business_ids):
+    mapping = {business_ids[i] : i for i in range(len(business_ids))}
+    return mapping
+
+
 descr = pitches_df['Pitched_Business_Desc']
 descriptions = [None] * len(descr)
 n_docs = len(descriptions)
@@ -126,3 +133,6 @@ for ind in range(n_docs):
 inverted_index = build_inverted_index(descriptions)
 idf_dict = compute_idf(inverted_index, n_docs)
 doc_norms = compute_doc_norms(inverted_index, idf_dict, n_docs)
+
+business_ids = pitches_df['Pitched_Business_Identifier']
+mapping = index_businessid_mapping(business_ids)

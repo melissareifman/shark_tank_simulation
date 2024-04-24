@@ -76,10 +76,20 @@
             let dealStatusMessage = dealShark == "N/A" ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
             let imageSrc = getImageSrc(dealShark);
 
-            //if there are 2 sharks
             let sharkImages = '';
-            let sharkName = '';
+            let sharkNames = '';
+        
+            const sharks = dealShark.split('+');
+            sharks.forEach((shark, index) =>{
+                const sharkSrc = getImageSrc(shark);
+                const sharkName = getShark(shark);
 
+                sharkImages += `<img src="/static/${sharkSrc}" class="shark-img" alt="${shark}">`
+                sharkNames += (index > 0 ? ' + ' : '') + sharkName;
+            });
+            
+
+            /*
             if (dealShark.includes('+')){
                 const sharks = dealShark.split('+');
                 const shark1Src = getImageSrc(sharks[0]);
@@ -101,6 +111,8 @@
                 sharkImages =  `<img src="/static/${imageSrc}" alt="Shark Image" />`;
                 sharkName = getShark(dealShark);
             }
+            */
+    
 
            
             return `
@@ -108,9 +120,9 @@
                 <div class='card-content'>
                     <h3 class='pitch-title'>${businessIdentifier}</h3>
                     <p class='pitch-desc'>${businessDesc}</p>
-                    <p class='deal-shark sharks-label'>Shark(s): ${sharkName}</p>
+                    <p class='deal-shark sharks-label'>Shark(s): ${sharkNames}</p>
                     ${ratingDisplay}
-                    <p class='deal-shark sharks-label'>Similarity Score: ${simScore.toFixed(2)}</p>
+                    <p class='deal-shark sharks-label'>Relevance Score: ${simScore.toFixed(2)}</p>
                     <div></div>
                     <p class='deal-shark sharks-label'>Is this idea similar to your pitch?</p>
                     <div class='feedback-buttons'>
@@ -152,7 +164,7 @@
             document.getElementById("overlay").style.display = "none";
         }
 
-        function attachFeedbackButtonListeners() {            
+        function attachFeedbackButtonListeners() { 
             const buttons = document.querySelectorAll('.feedback-buttons button');
 
             buttons.forEach(button => {
