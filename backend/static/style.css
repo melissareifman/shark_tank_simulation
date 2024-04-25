@@ -158,7 +158,7 @@ body {
     background-color: transparent;
 }
 
-.feedback-buttons button{
+.feedback-buttons button {
     padding: 10px 20px;
     margin: 0px;
     background-color: #557DCD;
@@ -169,8 +169,23 @@ body {
     transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.feedback-buttons button:hover{
+.feedback-buttons button:hover {
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.feedback-buttons button.thumbs-up-clicked {
+    background-color: #4CAF50;
+    pointer-events: none;
+}
+
+.feedback-buttons button.thumbs-down-clicked {
+    background-color: #FF5733;
+    pointer-events: none;
+}
+
+.feedback-buttons button.disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 #answer-box-container {
@@ -340,17 +355,24 @@ body {
 */
 .shark-images {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columns */
-    grid-gap: 10px; /* Adjust the spacing between images */
-    justify-items: center; /* Center the images within the grid cells */
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columns */
+    grid-gap: 10px;
+    /* Adjust the spacing between images */
+    justify-items: center;
+    /* Center the images within the grid cells */
     align-items: center;
     margin-top: 10px;
 }
 
 /* Shark images styling */
 .shark-img {
-    width: 60px; /* Adjust the width as desired */
-    height: 60px; /* Adjust the height as desired */
-    border-radius: 50%; /* Make images circular */
-    object-fit: cover; /* Ensure images fill their containers */
+    width: 60px;
+    /* Adjust the width as desired */
+    height: 60px;
+    /* Adjust the height as desired */
+    border-radius: 50%;
+    /* Make images circular */
+    object-fit: cover;
+    /* Ensure images fill their containers */
 }

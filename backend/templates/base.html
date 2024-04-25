@@ -78,16 +78,16 @@
 
             let sharkImages = '';
             let sharkNames = '';
-        
+
             const sharks = dealShark.split('+');
-            sharks.forEach((shark, index) =>{
+            sharks.forEach((shark, index) => {
                 const sharkSrc = getImageSrc(shark);
                 const sharkName = getShark(shark);
 
                 sharkImages += `<img src="/static/${sharkSrc}" class="shark-img" alt="${shark}">`
                 sharkNames += (index > 0 ? ' + ' : '') + sharkName;
             });
-            
+
 
             /*
             if (dealShark.includes('+')){
@@ -112,9 +112,9 @@
                 sharkName = getShark(dealShark);
             }
             */
-    
 
-           
+
+
             return `
             <div class='card'>
                 <div class='card-content'>
@@ -126,8 +126,8 @@
                     <div></div>
                     <p class='deal-shark sharks-label'>Is this idea similar to your pitch?</p>
                     <div class='feedback-buttons'>
-                        <button data-feedback="relevant" data-doc-id="${businessIdentifier}"><i class="fa fa-thumbs-up"></i></button>
-                        <button data-feedback="irrelevant" data-doc-id="${businessIdentifier}"><i class="fa fa-thumbs-down"></i></button>
+                        <button data-feedback="relevant" data-doc-id="${businessIdentifier}" class="thumbs-up"><i class="fa fa-thumbs-up"></i></button>
+                        <button data-feedback="irrelevant" data-doc-id="${businessIdentifier}" class="thumbs-down"><i class="fa fa-thumbs-down"></i></button>
                     </div>
                  </div>
             ${sharkImages}
@@ -164,14 +164,34 @@
             document.getElementById("overlay").style.display = "none";
         }
 
-        function attachFeedbackButtonListeners() { 
+        function attachFeedbackButtonListeners() {
             const buttons = document.querySelectorAll('.feedback-buttons button');
 
             buttons.forEach(button => {
-                button.addEventListener('click', function(event) {
-                    event.preventDefault(); 
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+
+                    // button click feedback and disabling
+                    const buttonsContainer = this.closest('.feedback-buttons');
+                    const pitchButtons = buttonsContainer.querySelectorAll('button');
+
+                    pitchButtons.forEach(btn => {
+                        btn.disabled = true;
+                        if (btn !== this) {
+                            btn.classList.add('disabled');
+                        }
+                    });
+
+                    this.disabled = false;
+                    this.classList.remove('disabled');
+                    if (this.dataset.feedback === 'relevant') {
+                        this.classList.add('thumbs-up-clicked');
+                    } else if (this.dataset.feedback === 'irrelevant') {
+                        this.classList.add('thumbs-down-clicked');
+                    }
+
                     //console.log('Button clicked:', event.target);
-                    const feedback = this.getAttribute('data-feedback'); 
+                    const feedback = this.getAttribute('data-feedback');
                     //console.log('Feedback:', feedback);
                     const docId = this.getAttribute('data-doc-id');
 
@@ -182,13 +202,13 @@
                         },
                         body: JSON.stringify({ feedback: feedback, doc_id: docId }),
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Feedback received:', data);
-                    })
-                    .catch(error => {
-                        console.error('Error sending feedback:', error);
-                    });
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Feedback received:', data);
+                        })
+                        .catch(error => {
+                            console.error('Error sending feedback:', error);
+                        });
                 });
             });
         }
