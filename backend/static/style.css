@@ -220,12 +220,8 @@ body {
 }
 
 .card img {
-    /* width: 130px;
+    width: 130px;
     height: 130px;
-    border-radius: 50%;
-    margin-left: 20px; */
-    max-width: 100%; /* This ensures that images are never larger than the card */
-    height: auto; /* This keeps the aspect ratio of the images intact */
     border-radius: 50%;
     margin-left: 20px;
 }
