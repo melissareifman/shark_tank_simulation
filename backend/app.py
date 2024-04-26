@@ -298,12 +298,16 @@ def svd_search(query, U, S, Vt, pitches_df, idf_dict):
     # agg_sims = cos_similarity
     # agg_sims = similarities
 
+    # top_indices = np.where(agg_sims > 0.5)[0]
+    # if len(top_indices) == 0:
+    #     return None
+    agg_sims = np.nan_to_num(agg_sims)  # Convert NaN to 0
     top_indices = np.where(agg_sims > 0.5)[0]
-    if len(top_indices) == 0:
-        return None
     
-    matches_filtered = pitches_df.iloc[top_indices]
-    matches_filtered["similarity_score"] = agg_sims[top_indices]
+    # matches_filtered = pitches_df.iloc[top_indices]
+    # matches_filtered["similarity_score"] = agg_sims[top_indices]
+    matches_filtered = pitches_df.iloc[top_indices].copy()  # Ensure it's a copy
+    matches_filtered.loc[:, "similarity_score"] = agg_sims[top_indices]
 
     matches_filtered = matches_filtered.sort_values(by="similarity_score", ascending=False)
 
