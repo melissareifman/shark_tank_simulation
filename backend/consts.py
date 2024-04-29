@@ -118,7 +118,6 @@ def compute_doc_norms(index, idf, n_docs):
     return norms
 
 
-
 def index_businessid_mapping(business_ids):
     mapping = {business_ids[i] : i for i in range(len(business_ids))}
     return mapping

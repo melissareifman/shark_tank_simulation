@@ -78,13 +78,11 @@
 
             let sharkImages = '';
             let sharkNames = '';
-
+            
+        
             const sharks = dealShark.split('+');
             sharks.forEach((shark, index) => {
-                const sharkSrc = getImageSrc(shark);
                 const sharkName = getShark(shark);
-
-                sharkImages += `<img src="/static/${sharkSrc}" class="shark-img" alt="${shark}">`
                 sharkNames += (index > 0 ? ' + ' : '') + sharkName;
             });
 
@@ -94,10 +92,7 @@
                 const sharks = dealShark.split('+');
                 const shark1Src = getImageSrc(sharks[0]);
                 const shark2Src = getImageSrc(sharks[1]);
-                const shark1Name = getShark(sharks[0]);
-                const shark2Name = getShark(sharks[1]);
 
-                sharkName = shark1Name + " + " + shark2Name;
                 sharkImages =`
                     <div class="shark-images">
                         <img src="/static/${shark1Src}" class="shark-img" alt="${sharks[0]}">
@@ -109,11 +104,8 @@
             //if there is 1 shark
             else{
                 sharkImages =  `<img src="/static/${imageSrc}" alt="Shark Image" />`;
-                sharkName = getShark(dealShark);
             }
             
-
-
 
             return `
             <div class='card'>
@@ -150,11 +142,13 @@
                         tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark, row.US_Viewership, simScore)
                         document.getElementById("answer-box").appendChild(tempDiv);
                     });
+
                     document.getElementById("loading-spinner").style.display = "none"; // Hide spinner once data is loaded
 
                     attachFeedbackButtonListeners();
                 });
         }
+
 
         function handleClick() {
             document.getElementById('full-body-container').style.backgroundImage = 'none';

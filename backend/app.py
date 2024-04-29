@@ -92,57 +92,6 @@ def feedback():
 
     return jsonify(success=True)
 
-# def compute_query_vector(query, idf_dict):
-#     """
-#     Compute the TF-IDF vector for the query based on the provided IDF values.
-#     """
-#     query_terms = query.lower().split()
-#     tf_query = {term: query_terms.count(term) for term in set(query_terms)}
-
-#     tfidf_query = np.zeros(len(idf_dict))
-#     for term, tf in tf_query.items():
-#         if term in idf_dict:
-#             index = list(idf_dict.keys()).index(term)
-#             tfidf_query[index] = tf * idf_dict[term]
-#     return tfidf_query
-
-# def compute_document_vector(doc_id, inverted_index, idf_dict, n_docs):
-#     tfidf_vector = np.zeros(len(idf_dict))
-#     for term, idf_value in idf_dict.items():
-#         if term in inverted_index:
-#             doc_occurrences = [freq for doc, freq in inverted_index[term] if doc == doc_id]
-#             if doc_occurrences:
-#                 tf = doc_occurrences[0]
-#                 tfidf_vector[list(idf_dict.keys()).index(term)] = tf * idf_value
-#     return tfidf_vector
-
-# def cosine_similarity(tfidf_doc, tfidf_query, doc_norm):
-#     """
-#     Calculate the cosine similarity between a document and the query.
-#     """
-#     if np.linalg.norm(tfidf_query) == 0 or doc_norm == 0:
-#         return 0
-#     return np.dot(tfidf_doc, tfidf_query) / (doc_norm * np.linalg.norm(tfidf_query))
-
-# def json_search(query):
-
-#     query_words = set(query.lower().split())
-#     query_word_count = len(query_words)
-#     tfidf_query = compute_query_vector(query, consts.idf_dict)
-#     similarities = []
-
-#     print("this is iterrows:")
-#     print(pitches_df.iterrows())
-#     print("")
-
-#     for index, row in pitches_df.iterrows():
-#         print("this is index: "+ index)
-#         print("this is row: "+ row)
-#         tfidf_doc = compute_document_vector(index, consts.inverted_index, consts.idf_dict, consts.n_docs)
-#         doc_norm = consts.doc_norms[int(row)]
-#         similarity = cosine_similarity(tfidf_doc, tfidf_query, doc_norm)
-#         similarities.append((index, similarity))
-
 
 def create_tfidf_matrix(document_list):
     """ 
@@ -204,7 +153,7 @@ def json_search(query):
 
     return similarities
 
-def rocchio(query, a=.3, b=.3, c=.8, clip = True):
+def rocchio(query, a=1, b=.75, c=.15, clip = False):
     """Returns a vector representing the modified query vector.
 
     Note:
@@ -255,20 +204,6 @@ def svd_search(query, U, S, Vt, pitches_df, idf_dict):
     document_projections = U * S[:len(query_svd)]
     similarities = np.dot(document_projections, query_svd)
 
-
-    # print("len of soc sims: " + repr(len(social_similarities)))
-
-    # print("")
-    # print("len of svd sims" + repr(len(similarities)))
-    # print("len of cos sims" + repr(len(cos_similarity)))
-    # print("")
-    # print("svd sims")
-    # print(similarities)
-    # print("")
-    # print("cos sims")
-    # print(cos_similarity)
-    # print("")
-
     # agg_sims = similarities
     cos_similarity = np.array(cos_similarity)
     similarities = np.array(similarities)
@@ -286,13 +221,6 @@ def svd_search(query, U, S, Vt, pitches_df, idf_dict):
     min_viewership = pitches_df['US_Viewership'].min()
     pitches_df['Normalized_Viewership'] = (pitches_df['US_Viewership'] - min_viewership) / (max_viewership - min_viewership)
     social_similarities = similarities * (pitches_df['Normalized_Viewership'].values) # EDIT SOCIAL COMP EFFECT
-
-    # print("new svd sims")
-    # print(social_similarities)
-    # print("")
-    # print("new cos sims")
-    # print(cos_similarity)
-    # print("")
 
     agg_sims = ((0.9 * cos_similarity) + (0.1 * social_similarities))
     # agg_sims = cos_similarity
