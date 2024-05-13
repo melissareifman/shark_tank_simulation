@@ -71,15 +71,15 @@
             }
         }
 
-        function answerBoxTemplate(businessIdentifier, businessDesc, dealShark, episodeRating, simScore) {
+        function answerBoxTemplate(businessIdentifier, businessDesc, dealShark, episodeRating, simScore, svdScore, cosScore) {
             let ratingDisplay = episodeRating ? `<p class='episode-rating'>Episode Rating: ${episodeRating}</p>` : `<p class='episode-rating'>Rating not available</p>`;
             let dealStatusMessage = dealShark == "N/A" ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
             let imageSrc = getImageSrc(dealShark);
 
             let sharkImages = '';
             let sharkNames = '';
-            
-        
+
+
             const sharks = dealShark.split('+');
             sharks.forEach((shark, index) => {
                 const sharkName = getShark(shark);
@@ -87,13 +87,13 @@
             });
 
 
-            
-            if (dealShark.includes('+')){
+
+            if (dealShark.includes('+')) {
                 const sharks = dealShark.split('+');
                 const shark1Src = getImageSrc(sharks[0]);
                 const shark2Src = getImageSrc(sharks[1]);
 
-                sharkImages =`
+                sharkImages = `
                     <div class="shark-images">
                         <img src="/static/${shark1Src}" class="shark-img" alt="${sharks[0]}">
                         <img src="/static/${shark2Src}" class="shark-img" alt="${sharks[1]}">
@@ -102,10 +102,19 @@
 
             }
             //if there is 1 shark
-            else{
-                sharkImages =  `<img src="/static/${imageSrc}" alt="Shark Image" />`;
+            else {
+                sharkImages = `<img src="/static/${imageSrc}" alt="Shark Image" />`;
             }
-            
+
+            const relevanceExplanation = `
+            The final relevance score of ${simScore.toFixed(2)} for this pitch was computed based on a pitch structure similarity score of ${svdScore.toFixed(2)} and a text similarity score of ${cosScore.toFixed(2)}. 
+            Finally, the episode viewership of ${episodeRating} was weighed versus similar pitches to improve relevance of search results.
+            `;
+
+            let learnMoreButton = `
+            <button class="learn-more-button" onclick="toggleExplanation(this)">Learn more</button>
+            <div class="relevance-explanation explanation" style="display: none;">${relevanceExplanation}</div>
+            `;
 
             return `
             <div class='card'>
@@ -115,7 +124,7 @@
                     <p class='deal-shark sharks-label'>Shark(s): ${sharkNames}</p>
                     ${ratingDisplay}
                     <p class='deal-shark sharks-label'>Relevance Score: ${simScore.toFixed(2)}</p>
-                    <div></div>
+                    <div></div>${learnMoreButton}
                     <p class='deal-shark sharks-label'>Is this idea similar to your pitch?</p>
                     <div class='feedback-buttons'>
                         <button data-feedback="relevant" data-doc-id="${businessIdentifier}" class="thumbs-up"><i class="fa fa-thumbs-up"></i></button>
@@ -138,9 +147,12 @@
                 .then((data) => {
                     data.forEach(row => {
                         let simScore = row.similarity_score;
+                        let svdScore = row.svd_score;
+                        let cosScore = row.cos_score;
                         let tempDiv = document.createElement("div")
-                        tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark, row.US_Viewership, simScore)
+                        tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark, row.US_Viewership, simScore, svdScore, cosScore)
                         document.getElementById("answer-box").appendChild(tempDiv);
+                        attachLearnMoreButtonListener(tempDiv);
                     });
 
                     document.getElementById("loading-spinner").style.display = "none"; // Hide spinner once data is loaded
@@ -156,6 +168,28 @@
             document.getElementById('top-text').style.display = "block";
             // document.getElementById("answer-box-container").style.border = "1px solid #000";
             document.getElementById("overlay").style.display = "none";
+        }
+
+        function toggleExplanationVisibility(button) {
+            const explanationDiv = button.nextElementSibling;
+
+            if (explanationDiv.style.display === 'block') {
+                explanationDiv.style.display = 'none';
+                button.textContent = 'Learn more';
+            } else {
+                explanationDiv.style.display = 'block';
+                button.textContent = 'Close';
+            }
+        }
+
+        function attachLearnMoreButtonListener(container) {
+            const learnMoreButtons = container.querySelectorAll('.learn-more-button');
+
+            learnMoreButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    toggleExplanationVisibility(this); // Pass the clicked button as an argument
+                });
+            });
         }
 
         function attachFeedbackButtonListeners() {

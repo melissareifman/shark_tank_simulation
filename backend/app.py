@@ -236,6 +236,8 @@ def svd_search(query, U, S, Vt, pitches_df, idf_dict):
     # matches_filtered["similarity_score"] = agg_sims[top_indices]
     matches_filtered = pitches_df.iloc[top_indices].copy()  # Ensure it's a copy
     matches_filtered.loc[:, "similarity_score"] = agg_sims[top_indices]
+    matches_filtered.loc[:, "svd_score"] = similarities[top_indices]
+    matches_filtered.loc[:, "cos_score"] = cos_similarity[top_indices]
 
     matches_filtered = matches_filtered.sort_values(by="similarity_score", ascending=False)
 
