@@ -188,6 +188,28 @@ def rocchio(query, a=1, b=.75, c=.15, clip = False):
 
     return res
 
+
+def extract_top_terms(query, document_text):
+    """
+    Extract top relevant terms between the query and the document.
+    """
+    stop_words = {"the", "is", "and", "this", "are", "a", "an", "in", "to", "of", "for", "but", "say", "that", "hello"}   
+
+    query_vector = compute_tfidf_vector(query, idf_dict)
+    document_vector = compute_tfidf_vector(document_text, idf_dict)
+
+    # Compute TF-IDF score for each word in combined vocabulary
+    tfidf_scores = {word: query_vector[i] * document_vector[i] for i, word in enumerate(list(idf_dict.keys()))}
+
+    # Get top N terms by TF-IDF score
+    top_n = int(len(document_text) * 0.1)
+    top_terms = sorted(tfidf_scores, key=tfidf_scores.get, reverse=True)[:top_n]
+    
+    # Filter out stop words from top terms
+    top_terms_filtered = [term for term in top_terms if term not in stop_words and tfidf_scores.get(term, 0) > 0]
+
+    return top_terms_filtered
+
 def svd_search(query, U, S, Vt, pitches_df, idf_dict):
     cos_similarity = json_search(query)
     query_vector = compute_tfidf_vector(query, idf_dict)
@@ -231,13 +253,22 @@ def svd_search(query, U, S, Vt, pitches_df, idf_dict):
     #     return None
     agg_sims = np.nan_to_num(agg_sims)  # Convert NaN to 0
     top_indices = np.where(agg_sims > 0.5)[0]
-    
+
+    top_terms_list = []
+    for index in top_indices:
+        doc_text = pitches_df.iloc[index]['Pitched_Business_Desc']
+        top_terms = extract_top_terms(query, doc_text)
+        top_terms_list.append(top_terms)
+
+
+
     # matches_filtered = pitches_df.iloc[top_indices]
     # matches_filtered["similarity_score"] = agg_sims[top_indices]
     matches_filtered = pitches_df.iloc[top_indices].copy()  # Ensure it's a copy
     matches_filtered.loc[:, "similarity_score"] = agg_sims[top_indices]
     matches_filtered.loc[:, "svd_score"] = similarities[top_indices]
     matches_filtered.loc[:, "cos_score"] = cos_similarity[top_indices]
+    matches_filtered.loc[:, "relevant_words"] = top_terms_list
 
     matches_filtered = matches_filtered.sort_values(by="similarity_score", ascending=False)
 
