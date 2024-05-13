@@ -71,7 +71,7 @@
             }
         }
 
-        function answerBoxTemplate(businessIdentifier, businessDesc, dealShark, episodeRating, simScore, svdScore, cosScore) {
+        function answerBoxTemplate(businessIdentifier, businessDesc, dealShark, episodeRating, simScore, svdScore, cosScore, relWords) {
             let ratingDisplay = episodeRating ? `<p class='episode-rating'>Episode Rating: ${episodeRating}</p>` : `<p class='episode-rating'>Rating not available</p>`;
             let dealStatusMessage = dealShark == "N/A" ? `<p class="no-deal">NO DEAL</p>` : `<p class="yes-deal">DEAL</p>`;
             let imageSrc = getImageSrc(dealShark);
@@ -106,9 +106,14 @@
                 sharkImages = `<img src="/static/${imageSrc}" alt="Shark Image" />`;
             }
 
+            let relevantWords = '';
+            if (relWords && relWords.length > 0) {
+                relevantWords = `Words in your query that were relevant to this pitch include: [${relWords.join(', ')}].`;
+            }
+
             const relevanceExplanation = `
-            The final relevance score of ${simScore.toFixed(2)} for this pitch was computed based on a pitch structure similarity score of ${svdScore.toFixed(2)} and a text similarity score of ${cosScore.toFixed(2)}. 
-            Finally, the episode viewership of ${episodeRating} was weighed versus similar pitches to improve relevance of search results.
+            The final relevance score of <b>${simScore.toFixed(2)}</b> for this pitch was computed based on a pitch structure similarity score of <b>${svdScore.toFixed(2)}</b> and a text similarity score of <b>${cosScore.toFixed(2)}</b>. 
+            Finally, the episode viewership of <b>${episodeRating}</b> was weighed versus similar pitches to improve relevance of search results. ${relevantWords}
             `;
 
             let learnMoreButton = `
@@ -149,8 +154,9 @@
                         let simScore = row.similarity_score;
                         let svdScore = row.svd_score;
                         let cosScore = row.cos_score;
+                        let relWords = row.relevant_words;
                         let tempDiv = document.createElement("div")
-                        tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark, row.US_Viewership, simScore, svdScore, cosScore)
+                        tempDiv.innerHTML = answerBoxTemplate(row.Pitched_Business_Identifier, row.Pitched_Business_Desc, row.Deal_Shark, row.US_Viewership, simScore, svdScore, cosScore, relWords)
                         document.getElementById("answer-box").appendChild(tempDiv);
                         attachLearnMoreButtonListener(tempDiv);
                     });
