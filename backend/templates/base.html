@@ -18,7 +18,7 @@
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
                 <input placeholder="Search for a pitch by business description" id="filter-text-val"
                     onkeydown="if (event.key === 'Enter') { filterText(); }">
-                <button class="search-button" onclick="filterText()">Enter</button>
+                <button class="search-button" onclick="filterText()" style="font-family: 'Kanit', sans-serif;">Enter</button>
             </div>
         </div>
         <div id="answer-box-container">
@@ -131,15 +131,20 @@
                     ${ratingDisplay}
                     <p class='deal-shark sharks-label'>Relevance Score: ${simScore.toFixed(2)}</p>
                     <div></div>${learnMoreButton}
-                    <p class='deal-shark sharks-label'>Is this idea similar to your pitch?</p>
-                    <div class='feedback-buttons'>
-                        <button data-feedback="relevant" data-doc-id="${businessIdentifier}" class="thumbs-up"><i class="fa fa-thumbs-up"></i></button>
-                        <button data-feedback="irrelevant" data-doc-id="${businessIdentifier}" class="thumbs-down"><i class="fa fa-thumbs-down"></i></button>
-                    </div>
                  </div>
             ${sharkImages}
             </div>`;
         }
+
+        /*
+         feedback button code
+
+        <p class='deal-shark sharks-label'>Is this idea similar to your pitch?</p>
+        <div class='feedback-buttons'>
+            <button data-feedback="relevant" data-doc-id="${businessIdentifier}" class="thumbs-up"><i class="fa fa-thumbs-up"></i></button>
+            <button data-feedback="irrelevant" data-doc-id="${businessIdentifier}" class="thumbs-down"><i class="fa fa-thumbs-down"></i></button>
+        </div>
+        */
 
         function sendFocus() {
             document.getElementById('filter-text-val').focus()
@@ -164,7 +169,7 @@
 
                     document.getElementById("loading-spinner").style.display = "none"; // Hide spinner once data is loaded
 
-                    attachFeedbackButtonListeners();
+                    //attachFeedbackButtonListeners();
                 });
         }
 
@@ -199,6 +204,7 @@
             });
         }
 
+        /*
         function attachFeedbackButtonListeners() {
             const buttons = document.querySelectorAll('.feedback-buttons button');
 
@@ -247,6 +253,7 @@
                 });
             });
         }
+        */
 
     </script>
 </body>

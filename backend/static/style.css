@@ -371,11 +371,8 @@ body {
 .shark-images {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    /* 2 columns */
     grid-gap: 10px;
-    /* Adjust the spacing between images */
     justify-items: center;
-    /* Center the images within the grid cells */
     align-items: center;
     margin-top: 10px;
 }
@@ -383,17 +380,14 @@ body {
 /* Shark images styling */
 .shark-img {
     width: 60px;
-    /* Adjust the width as desired */
     height: 60px;
-    /* Adjust the height as desired */
     border-radius: 50%;
-    /* Make images circular */
     object-fit: cover;
-    /* Ensure images fill their containers */
 }
 
 .learn-more-button {
-    padding: 10px 20px;
+    font-family: 'Kanit', sans-serif;
+    padding: 8px 16px;
     margin: 0px;
     background-color: #557DCD;
     color: white;

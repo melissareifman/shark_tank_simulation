@@ -12,10 +12,12 @@ import consts
 app = Flask(__name__)
 CORS(app)
 
+"""
 feedback_data = {
     "relevant" : set(),
     "irrelevant" : set()
 }
+"""
 
 # Load data from JSON
 def load_data(json_file_path):
@@ -73,6 +75,7 @@ def pitches_search():
     return result or {"message": "No matches found"}, 404
 
 
+"""
 @app.route('/feedback', methods=['POST'])
 def feedback():
     data = request.get_json()  # Retrieve JSON data from the request
@@ -91,7 +94,7 @@ def feedback():
     print(f"Irrelevant Docs: {feedback_data['irrelevant']}")
 
     return jsonify(success=True)
-
+"""
 
 def create_tfidf_matrix(document_list):
     """ 
@@ -153,13 +156,14 @@ def json_search(query):
 
     return similarities
 
+"""
 def rocchio(query, a=1, b=.75, c=.15, clip = False):
-    """Returns a vector representing the modified query vector.
+    #Returns a vector representing the modified query vector.
 
-    Note:
-        If the `clip` parameter is set to True, the resulting vector should have
-        no negatve weights in it!
-    """
+    #Note:
+    #    If the `clip` parameter is set to True, the resulting vector should have
+    #    no negatve weights in it!
+
     q0 = query
     relevant_docs = list(feedback_data["relevant"])
     irrelevant_docs = list(feedback_data["irrelevant"])
@@ -187,7 +191,7 @@ def rocchio(query, a=1, b=.75, c=.15, clip = False):
                 res[i] = 0
 
     return res
-
+"""
 
 def extract_top_terms(query, document_text):
     """
@@ -212,9 +216,9 @@ def extract_top_terms(query, document_text):
 def svd_search(query, U, S, Vt, pitches_df, idf_dict):
     cos_similarity = json_search(query)
     query_vector = compute_tfidf_vector(query, idf_dict)
-    updated_query_vector = rocchio(query_vector)
-    print(f"query vec: {query_vector}")
-    print(f"rocchio query vec: {updated_query_vector}")
+    updated_query_vector = query_vector #rocchio(query_vector)
+    #print(f"query vec: {query_vector}")
+    #print(f"rocchio query vec: {updated_query_vector}")
 
 
     if np.linalg.norm(query_vector) == 0:
