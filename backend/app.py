@@ -201,9 +201,8 @@ def extract_top_terms(query, document_text):
     # Compute TF-IDF score for each word in combined vocabulary
     tfidf_scores = {word: query_vector[i] * document_vector[i] for i, word in enumerate(list(idf_dict.keys()))}
 
-    # Get top N terms by TF-IDF score
-    top_n = int(len(document_text) * 0.1)
-    top_terms = sorted(tfidf_scores, key=tfidf_scores.get, reverse=True)[:top_n]
+    # Get terms sorted by TF-IDF score
+    top_terms = sorted(tfidf_scores, key=tfidf_scores.get, reverse=True)
     
     # Filter out stop words from top terms
     top_terms_filtered = [term for term in top_terms if term not in stop_words and tfidf_scores.get(term, 0) > 0]
