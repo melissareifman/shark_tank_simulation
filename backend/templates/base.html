@@ -17,7 +17,8 @@
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
                 <input placeholder="Search for a pitch by business description" id="filter-text-val"
-                    onkeyup="filterText()">
+                    onkeydown="if (event.key === 'Enter') { filterText(); }">
+                <button class="search-button" onclick="filterText()">Enter</button>
             </div>
         </div>
         <div id="answer-box-container">

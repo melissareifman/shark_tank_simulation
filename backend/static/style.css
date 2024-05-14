@@ -158,6 +158,21 @@ body {
     background-color: transparent;
 }
 
+.input-box button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    background-color: #557DCD;
+    color: white;
+    border-radius: 50px;
+    border: none;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.input-box button:hover {
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+}
+
 .feedback-buttons button {
     padding: 10px 20px;
     margin: 0px;
